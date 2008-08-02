@@ -1,0 +1,37 @@
+###
+### NOTE: /etc/xs-rsyncd.conf is built from /etc/xs-rsyncd.conf.in
+###
+#
+# XS-rsync is triggered from xinetd. A few notes
+#
+# - Runs under fakeroot each invocation gets a chance to reload the
+#   fakeroot context.
+# 
+pid file        = /var/run/xs-rsync/rsync.pid
+lock file       = /var/run/xs-rsync/rsync.lock
+use chroot      = yes
+
+## This is a fallback - the main resource
+## controls are in the xinetd configuration
+max connections = 10
+
+##
+## XO builds for olpc-update
+##
+## Hopefully olpc-update will learn to use this
+## and we can stop updating this file.
+##
+[builds]
+path = /library/xs-rsync/pub/builds
+
+##
+## We could serve installable xo activities for xo-get
+##
+#[activities] 
+#path=//library/xs-rsync/pub/activities
+
+
+
+
+####### Below here, one module per build for the benefit
+####### of olpc-update - https://dev.laptop.org/ticket/7743

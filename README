@@ -1,0 +1,105 @@
+XS-rsync
+========
+
+Provides support for publishing media on the XS via rsync.
+
+To publish something
+
+ 1 - Add a new directory under /library/xs-rsync/pub/
+     make sure it is readable by the xs-rsync user.
+
+     The best strategy is to add general top-level
+     "modules" there, such as "xo-activities" to avoid
+     having to update rsyncd.conf.in often.
+
+ 2 - Edit /etc/xs-rsyncd.conf.in and add a new module
+     pointing to your new directory.
+
+ 3 - Run `xs-refresh-xobuildlist --rebuildconfig` 
+     as root to merge the dynamically created build list in.
+
+The first use of xs-rsync is to offer OS images to run
+XO software updates. There are utilities provided for this
+task.
+
+
+
+Publishing a new XO OS build
+----------------------------
+
+ 1 - Pick a name for the build. The build file can have one
+     of many names, depending on its source and build stream.
+
+     The name that the client machines will see it as - and
+     that the activation server will use - is often different.
+     If the build file comes in xyz_jffs2-tree.bz2 , put the
+     name in a file called xyz_jffs2.name .
+
+
+ 2 - Place 4 files in /library/xs-rsync/xobuilds-packed/
+     - the files are as follows
+         xyz_jffs2-tree.bz2     # tar.bz2 build img
+         xyz_jffs2-tree.bz2.md5 # md5 of the tarbz2
+         xyz_jffs2.contents     # json-encoded manifest
+         xyz_jffs2.name         # file containing the name
+
+ 3 - run xs-refresh-xobuildlist as root
+
+Also
+
+ - To delete stale builds: Remove the build's files 
+   and run `xs-refresh-xobuilds` as root .
+   Removing (or renaming) the .name file is enough.
+
+ - To force a re-unpack of the published builds run
+   `xs-refresh-xobuildlist --force` as root. This
+   will rebuild the fakeroot state files, which can
+   get out of sync if the underlying inodes change -
+   for example, if /library is moved to a different
+   disk.
+
+XO build - scripts involved
+---------------------------
+
+ - xs-refresh-xobuildlist the published builds with
+   /library/xs-rsync/xobuilds-packed/ - including updating
+   /etc/xs-rsyncd.gen.conf
+
+ - xs-publish-xobuild checks things, sets up env and calls
+   xs-unpack-xobuild to do the dirty work. Runs as xs-rsync.
+
+ - xs-unpack-xobuild unpacks the build under fakeroot
+   and applies minor fixups. Runs as xs-rsync.
+
+
+Discussion
+----------
+
+The olpc-update scheme has two tricky aspects
+
+ - Builds are expected to be "modules" so we have
+   to update our config file to list them.
+   See https://dev.laptop.org/ticket/7743
+
+   We solve this by re-generating xs-rsyncd.conf
+   the rsync process re-reads it for every new
+   client.
+
+ - The unpacked builds themselves have system files
+   and devices which we do NOT want to reproduce
+   on our FS literlly. We just want to serve them.
+
+   We use fakeroot with atomically-updated "state"
+   files. The fakeroot package includes a 'faked'
+   daemon that would remove the need for atomic
+   updates but we cannot count on it being ok with
+   unexpected poweroffs. Atomic updates of read-only
+   state files do give us the required resiliency.
+
+   xinetd starts a new fakeroot for every new
+   incoming connection - so new connections will
+   see the new state data transparently.
+
+To use rsync in the safest configuration, we run it
+with 'use chroot = yes' wrapped with fakechroot.
+

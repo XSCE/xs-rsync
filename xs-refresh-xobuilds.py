@@ -56,14 +56,13 @@ def main():
             continue
         if not buildsbyname.has_key(dirent):
             # rm -fr under the xs-rsync user privs
-            statefpath = os.path.join(STATEDIR, name+'.state')
+            statefpath = os.path.join(STATEDIR, dirent+'.state')
             if os.path.exists(statefpath):
                 check_call(['sudo', '-u', 'xs-rsync',
                             'rm', '-fr', fpath, statefpath ])
             buildremoved = True
 
     # Remove stale state files
-    buildremoved = False
     direntspub   = os.listdir(STATEDIR)
     for dirent in direntspub:
         fpath = os.path.join(STATEDIR,dirent)

@@ -1,0 +1,77 @@
+Name:           @PKGNAME@
+Version:        @VERSION@
+Release:        @RELEASE@%{?dist}
+
+Summary:        OLPC XS Rsync publishing
+Group:          Applications/Archiving
+License:        GPLv2
+Packager:       Martin Langhoff <martin@laptop.org>
+URL:            http://wiki.laptop.org/go/XS-rsync
+Source0:        http://dev.laptop.org/~martin/SOURCES/%{name}-%{version}.tar.bz2
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+BuildArch:      noarch
+BuildRequires:  make
+
+Requires:       python
+Requires:       rsync
+Requires:       xinetd
+Requires:       fakeroot
+Requires:       fakechroot
+Requires:       bash
+Requires:       vixie-cron
+
+Requires(pre):  fedora-usermgmt
+
+%description
+XS rsync provides support for publishing resources on the XS via rsync.
+
+The first use of xs-rsync is to offer OS images to run
+XO software updates. There are utilities provided for this
+task.
+
+
+%pre
+# Add the "xs-rsync" user and group - 2 + base id
+getent group xs-rsync || \
+       /usr/sbin/fedora-groupadd 2 xs-rsync 2> /dev/null  \
+       || :
+getent passwd xs-rsync || \
+       /usr/sbin/fedora-useradd  2 -c "XS Rsync" -M \
+       -s /sbin/nologin  -d /library/xs-rsync -g xs-rsync xs-rsync 2> /dev/null \
+       || :
+
+%prep
+
+%setup -q
+
+%build
+
+%install
+pwd
+ls
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+
+%files
+%{_bindir}/xs-publish-xobuild.py
+%{_bindir}/xs-publish-xobuild.pyo
+%{_bindir}/xs-publish-xobuild.pyc
+%{_bindir}/xs-refresh-xobuilds.py
+%{_bindir}/xs-refresh-xobuilds.pyo
+%{_bindir}/xs-refresh-xobuilds.pyc
+%{_bindir}/xs-unpack-xobuild.sh
+%doc README COPYING
+%config(noreplace) %{_sysconfdir}/xs-rsyncd.conf.in
+%config(noreplace) %{_sysconfdir}/xinetd.d/xs-rsyncd
+%config(noreplace) %{_sysconfdir}/cron.d/xs-rsync
+%attr(744, xs-rsync, root) %dir /library/xs-rsync/pub
+%attr(744, xs-rsync, root) %dir /library/xs-rsync/pub/builds
+%attr(700, xs-rsync, root) %dir /library/xs-rsync/state
+%attr(700, xs-rsync, root) %dir /library/xs-rsync/tmp
+
+%changelog
+* Sat Aug 2 2008 Martin Langhoff <martin@laptop.org - 0.1-1
+  - This is a git-maintaned package - See the changelog at
+  http://dev.laptop.org/git?p=users/martin/xs-rsync;a=log;h=@COMMITID@
+(END) 

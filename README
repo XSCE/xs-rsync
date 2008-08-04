@@ -1,7 +1,7 @@
 XS-rsync
 ========
 
-Provides support for publishing media on the XS via rsync.
+Provides support for publishing resources on the XS via rsync.
 
 To publish something
 
@@ -18,11 +18,13 @@ To publish something
  3 - Run `xs-refresh-xobuildlist --rebuildconfig` 
      as root to merge the dynamically created build list in.
 
+** The above steps are meant to be automated later with a mount
+** script so that plugging in a USB drive automounts and scans
+** the USB drive for publishable resources.
+
 The first use of xs-rsync is to offer OS images to run
 XO software updates. There are utilities provided for this
 task.
-
-
 
 Publishing a new XO OS build
 ----------------------------
@@ -102,4 +104,3 @@ The olpc-update scheme has two tricky aspects
 
 To use rsync in the safest configuration, we run it
 with 'use chroot = yes' wrapped with fakechroot.
-

@@ -41,9 +41,15 @@ getent passwd xs-rsync || \
        -s /sbin/nologin  -d /library/xs-rsync -g xs-rsync xs-rsync 2> /dev/null \
        || :
 
+%post
+# if the file does not exist, create an empty one
+touch /library/xs-rsync/state/rsyncd.all
+
 %prep
 
 %setup -q
+
+
 
 %build
 
@@ -65,10 +71,11 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/xs-rsyncd.conf.in
 %config(noreplace) %{_sysconfdir}/xinetd.d/xs-rsyncd
 %config(noreplace) %{_sysconfdir}/cron.d/xs-rsync
-%attr(744, xs-rsync, root) %dir /library/xs-rsync/pub
-%attr(744, xs-rsync, root) %dir /library/xs-rsync/pub/builds
-%attr(700, xs-rsync, root) %dir /library/xs-rsync/state
-%attr(700, xs-rsync, root) %dir /library/xs-rsync/tmp
+%attr(755, xs-rsync, xs-rsync) %dir /library/xs-rsync/pub
+%attr(755, xs-rsync, xs-rsync) %dir /library/xs-rsync/pub/builds
+%attr(750, xs-rsync, xs-rsync) %dir /library/xs-rsync/state
+%attr(750, xs-rsync, xs-rsync) %dir /library/xs-rsync/tmp
+%attr(750, xs-rsync, xs-rsync) %dir %{_localstatedir}/lib/xs-rsync
 
 %changelog
 * Sat Aug 2 2008 Martin Langhoff <martin@laptop.org - 0.1-1

@@ -93,7 +93,7 @@ def main():
 
 
     # copy the 'contents' file into place
-    destcontent = os.path.join(os.path.dirname(destdir), 'content')
+    destcontent = os.path.join(os.path.dirname(destdir), 'contents')
     shutil.copyfile(contentsfile, destcontent)
 
     update_fakerootstate(options)

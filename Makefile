@@ -90,7 +90,7 @@ install:
 	install -D -d $(DESTDIR)/library/xs-rsync/pub/builds
 	install -D -d $(DESTDIR)/library/xs-rsync/state
 	install -D -d $(DESTDIR)/library/xs-rsync/tmp
-	install -D -d $(DESTDIR)/var/run/rx-rsync
+	install -D -d $(DESTDIR)/var/run/xs-rsync
 
 # This forces a rebuild of xs-rsync.spec.in
 .PHONY: xs-rsync.spec.in install

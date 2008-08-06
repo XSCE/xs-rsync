@@ -34,16 +34,27 @@ task.
 %pre
 # Add the "xs-rsync" user and group - 2 + base id
 getent group xs-rsync || \
-       /usr/sbin/fedora-groupadd 2 xs-rsync 2> /dev/null  \
+       /usr/sbin/fedora-groupadd 2 -r xs-rsync 2> /dev/null  \
        || :
 getent passwd xs-rsync || \
        /usr/sbin/fedora-useradd  2 -c "XS Rsync" -M \
-       -s /sbin/nologin  -d /library/xs-rsync -g xs-rsync xs-rsync 2> /dev/null \
+       -s /sbin/nologin  -d /library/xs-rsync -r -g xs-rsync xs-rsync 2> /dev/null \
        || :
 
 %post
 # if the file does not exist, create an empty one
 touch /library/xs-rsync/state/rsyncd.all
+# Early run to create /etc/xs-rsyncd.conf
+if [ ! -e /etc/xs-rsyncd.conf ]; then 
+   cp -pr /etc/xs-rsyncd.conf{.in,}
+fi
+service xinetd condrestart
+
+%postun
+service xinetd condrestart
+if [ -e /etc/xs-rsyncd.conf ]; then 
+   rm /etc/xs-rsyncd.conf
+fi
 
 %prep
 
@@ -71,11 +82,12 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/xs-rsyncd.conf.in
 %config(noreplace) %{_sysconfdir}/xinetd.d/xs-rsyncd
 %config(noreplace) %{_sysconfdir}/cron.d/xs-rsync
+%dir  /library/xs-rsync/xobuilds-packed
 %attr(755, xs-rsync, xs-rsync) %dir /library/xs-rsync/pub
 %attr(755, xs-rsync, xs-rsync) %dir /library/xs-rsync/pub/builds
 %attr(750, xs-rsync, xs-rsync) %dir /library/xs-rsync/state
 %attr(750, xs-rsync, xs-rsync) %dir /library/xs-rsync/tmp
-%attr(750, xs-rsync, xs-rsync) %dir %{_localstatedir}/lib/xs-rsync
+%attr(750, xs-rsync, xs-rsync) %dir %{_localstatedir}/run/xs-rsync
 
 %changelog
 * Sat Aug 2 2008 Martin Langhoff <martin@laptop.org - 0.1-1

@@ -1,2 +1,4 @@
-*.pyc
-*~
+xs-rsync.spec
+build
+build-version
+xs-rsync.spec

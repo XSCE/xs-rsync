@@ -34,16 +34,16 @@ Publishing a new XO OS build
 
      The name that the client machines will see it as - and
      that the activation server will use - is often different.
-     If the build file comes in xyz_jffs2-tree.bz2 , put the
+     If the build file comes in xyz_jffs2-tree.tar.bz2 , put the
      name in a file called xyz_jffs2.name .
 
 
  2 - Place 4 files in /library/xs-rsync/xobuilds-packed/
      - the files are as follows
-         xyz_jffs2-tree.bz2     # tar.bz2 build img
-         xyz_jffs2-tree.bz2.md5 # md5 of the tarbz2
-         xyz_jffs2.contents     # json-encoded manifest
-         xyz_jffs2.name         # file containing the name
+         xyz_jffs2-tree.tar.bz2     # tar.bz2 build img
+         xyz_jffs2-tree.tar.bz2.md5 # md5 of the tarbz2
+         xyz_jffs2.contents         # json-encoded manifest
+         xyz_jffs2.name             # file containing the name
 
  3 - run xs-refresh-xobuilds as root
 

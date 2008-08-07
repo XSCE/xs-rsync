@@ -40,7 +40,7 @@ def main():
             name = namefile.readline()
             namefile.close()
             name=name.rstrip()
-            buildfn = m.group(1) + '-tree.bz2'
+            buildfn = m.group(1) + '-tree.tar.bz2'
             if not os.path.isfile(os.path.join(PACKEDDIR,buildfn)):
                 continue
             buildsbyname[name]     = buildfn

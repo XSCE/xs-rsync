@@ -51,7 +51,7 @@ def main():
 
     # the contents file is a bit more involved
     contentsfile = buildfile
-    m = re.match('(.*)-tree.bz2', contentsfile)
+    m = re.match('(.*)-tree.tar.bz2', contentsfile)
     if not m:
         raise RuntimeError('Cannot understand your buildfile name')
     contentsfile = m.group(1) + '.contents'

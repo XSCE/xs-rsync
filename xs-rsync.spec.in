@@ -21,8 +21,6 @@ Requires:       fakechroot
 Requires:       bash
 Requires:       vixie-cron
 
-Requires(pre):  fedora-usermgmt
-
 %description
 XS rsync provides support for publishing resources on the XS via rsync.
 
@@ -32,14 +30,13 @@ task.
 
 
 %pre
-# Add the "xs-rsync" user and group - 2 + base id
-getent group xs-rsync || \
-       /usr/sbin/fedora-groupadd 2 -r xs-rsync 2> /dev/null  \
-       || :
-getent passwd xs-rsync || \
-       /usr/sbin/fedora-useradd  2 -c "XS Rsync" -M \
-       -s /sbin/nologin  -d /library/xs-rsync -r -g xs-rsync xs-rsync 2> /dev/null \
-       || :
+# For static uid/gid mapping, see 
+# http://wiki.laptop.org/go/XS_UserManagement
+getent group xs-rsync >/dev/null || \
+       groupadd -r xs-rsync
+getent passwd xs-rsync >/dev/null || \
+       useradd -c "XS Rsync" -M  -s /sbin/nologin  \
+       -d /library/xs-rsync -r -g xs-rsync xs-rsync
 
 %post
 # if the file does not exist, create an empty one

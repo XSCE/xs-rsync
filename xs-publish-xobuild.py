@@ -108,12 +108,6 @@ def update_fakerootstate(options):
     os.environ['TMPDIR'] = options.tmpdir
     (tmpfh, tmpfpath) = tempfile.mkstemp()
 
-    ## NASTY WORKAROUND
-    ## We are getting truncated output unless we sleep
-    ## first.
-    import time
-    time.sleep(1)
-
     pfind  = Popen(['find', options.statedir, '-type', 'f',
                     '-name', '*.state', '-print0'], stdout=PIPE)
     pxargs = Popen(['xargs', '-0', '--no-run-if-empty', 'cat'],

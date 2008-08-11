@@ -70,17 +70,20 @@ def main():
     ##
     ## untar under fakeroot
     ##
-    destdir = os.path.join(destdir,buildname,'root')
-    if os.path.exists(destdir):
-        if options.force:
-            check_call(['rm', '-fr', destdir])
-        else:
-            raise RuntimeError('Destination directory already exists')
-    check_call(['mkdir', '-p', destdir])
-    tmpstatefile = os.path.join(options.statedir, buildname+".tmp")
-
     # having the tmpdir in the same partition makes final mv op atomic
     os.environ['TMPDIR'] = options.tmpdir
+
+    destdir = os.path.join(destdir,buildname,'root')
+    if os.path.exists(destdir):
+        # We'll overwrite it regardless
+        # as some error conditions leave an incomplete
+        # directory in place.
+        check_call(['rm', '-fr', destdir])
+
+    check_call(['mkdir', '-p', destdir])
+    (tmpfh, tmpfpath) = tempfile.mkstemp()
+    os.close(tmpfh)
+    tmpstatefile = tmpfpath
 
     basepath = os.path.dirname(sys.argv[0])
     check_call(['flock', tmpstatefile,

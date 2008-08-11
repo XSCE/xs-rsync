@@ -4,6 +4,8 @@ XS-rsync
 Provides support for publishing resources on the XS via rsync.
 
 To publish something
+~ this recipe is for ~
+~ script writers     ~
 
  1 - Add a new directory under /library/xs-rsync/pub/
      make sure it is readable by the xs-rsync user.
@@ -28,6 +30,41 @@ task.
 
 Publishing a new XO OS build
 ----------------------------
+
+~ With a USB stick, for a headless XO ~
+
+ 1 - Pick a name for the build. The build file can have one
+     of many names, depending on its source and build stream.
+
+     The name that the client machines will see it as - and
+     that the activation server will use - is often different.
+     If the build file comes in xyz_jffs2-tree.tar.bz2 , put the
+     name in a file called xyz_jffs2.name .
+
+
+ 2 - Place 4 files in a directory at the _root_ of the usb stick,
+     call the directory "xs-xobuilds", and include the files as follows:
+     - the files are as follows
+         xyz_jffs2-tree.tar.bz2     # tar.bz2 build img
+         xyz_jffs2-tree.tar.bz2.md5 # md5 of the tarbz2
+         xyz_jffs2.contents         # json-encoded manifest
+         xyz_jffs2.name             # file containing the name
+
+ 3 - Ensure there are no extraneous files, and create the manifest
+     from the commandline: (GUI-based instructions welcome)
+
+        cd /path/to/usb/xs-xobuilds;
+        md5sum * > manifest.md5
+
+ 4 - If your XS is enforcing security, you will need to sign the
+     manifest with the NOC key. See the Schoolserver wiki for more
+     info.
+
+ 5 - Done - plug the USB key into the XS, and the XO build should get
+     installed automatically. The activity is logged in
+     /var/log/user.log
+
+~ From the commandline or from a script ~
 
  1 - Pick a name for the build. The build file can have one
      of many names, depending on its source and build stream.

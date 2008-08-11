@@ -82,6 +82,8 @@ install:
 	install -D -m 644 xinetd-xs-rsyncd.conf $(DESTDIR)/etc/xinetd.d/xs-rsyncd
 	install -D -m 644 crond-xs-rsync.conf   $(DESTDIR)/etc/cron.d/xs-rsync
 
+	install -D -m 755 usbmount-50-xs-rsync-installcontent $(DESTDIR)/etc/usbmount/mount.d/50-xs-rsync-installcontent
+
 	# root owned
 	install -D -d $(DESTDIR)/library/xs-rsync
 	install -D -d $(DESTDIR)/library/xs-rsync/xobuilds-packed

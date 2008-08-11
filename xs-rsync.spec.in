@@ -20,6 +20,7 @@ Requires:       fakeroot
 Requires:       fakechroot
 Requires:       bash
 Requires:       vixie-cron
+Requires:       usbmount
 
 %description
 XS rsync provides support for publishing resources on the XS via rsync.
@@ -79,6 +80,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/xs-rsyncd.conf.in
 %config(noreplace) %{_sysconfdir}/xinetd.d/xs-rsyncd
 %config(noreplace) %{_sysconfdir}/cron.d/xs-rsync
+%config(noreplace) %{_sysconfdir}/usbmount/mount.d/50-xs-rsync-installcontent
 %dir  /library/xs-rsync/xobuilds-packed
 %attr(755, xs-rsync, xs-rsync) %dir /library/xs-rsync/pub
 %attr(755, xs-rsync, xs-rsync) %dir /library/xs-rsync/pub/builds

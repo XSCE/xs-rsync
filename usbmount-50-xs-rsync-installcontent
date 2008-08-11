@@ -1,0 +1,62 @@
+#!/bin/bash -x
+# Part of the xs-sync package
+# Author: Martin Langhoff <martin@laptop.org>
+# Copyright: One Laptop per Child
+
+set -e
+
+VERBOSE=no
+
+# Log a string via the syslog facility.
+log()
+{
+    if test $1 != debug || expr "$VERBOSE" : "[yY]" > /dev/null; then
+	logger -p user.$1 -t "xs-rsync[$$]" -- "$2"
+    fi
+}
+STEPS=5
+
+if [ -e $UM_MOUNTPOINT/xs-xobuilds -a \
+     -e $UM_MOUNTPOINT/xs-xobuilds/manifest.md5 ];then
+    log notice 'Found xobuilds to install!';
+    log notice "[1/$STEPS] Checking signature]";
+
+    xs-check-signature $UM_MOUNTPOINT/xs-xobuilds/manifest.md5
+
+    log notice "[2/$STEPS] Checking checksum on external disk";
+    pushd $UM_MOUNTPOINT/xs-xobuilds
+    md5sum -c manifest.md5
+    popd
+
+    ## Do we have enough space?
+    # note: we could use awk {'print $4'} instead of the
+    # perl regex, but it breaks with long /dev nodes
+    # such as those from LVMs -which wrap. The regex captures the
+    # number just left of the number with the percentage sign.
+    NEED=`du -s -B1M $UM_MOUNTPOINT/xs-xobuilds | awk {'print $1'}`
+    HAVE=`df -B1M /library/xs-rsync | tail -n1 | \
+	  perl -pe 'm/(\d+)\s+\d+\%/; $_=$1;'`
+    if [ $NEED -gt $HAVE ];then
+	log err 'Not enough free space in /library for this xo image - cancelling';
+	exit 1;
+    fi
+
+    ### Copy it first - as the media is bound to be slow
+    # - make this atomic by cp'ing to a tmpdir, and mv'ing into place
+    #   to be fail-safe
+    # - remove - manifest.md5
+    # - TODO? we could avoid cp'ing files we already have using
+    #   rsync --copy-dest instead of cp
+    #
+    log notice "[3/$STEPS] Copying xo-builds to xobuilds-packed";
+    TMPDEST=`mktemp -d -p /library/xs-rsync/tmp`
+    cp $UM_MOUNTPOINT/xs-xobuilds/* $TMPDEST
+    rm $TMPDEST/manifest.md5
+    mv $TMPDEST/* /library/xs-rsync/xobuilds-packed/
+
+    log notice "[4/$STEPS] Refreshing XO builds available";
+    (/usr/bin/xs-refresh-xobuilds.py 2>&1 ) | logger -p user.debug -t "xs-rsync[$$]"
+    log notice "[5/$STEPS] Finished - XOs can now update.";
+
+
+fi # end if we have xs-xobuilds/manifest.md5

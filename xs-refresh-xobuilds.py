@@ -83,7 +83,9 @@ def main():
     for buildname in buildsbyname.keys():
         bpath = os.path.join(BUILDSDIR,buildname)
         ppath = os.path.join(PACKEDDIR,buildsbyname[buildname])
-        if options.force or not os.path.exists(bpath):
+        if (options.force
+            or not os.path.exists(bpath)
+            or not os.path.exists(os.path.join(bpath,'contents'))):
             installcmd = [ 'sudo', '-u', 'xs-rsync',
                            os.path.join(os.path.dirname(sys.argv[0]), 'xs-publish-xobuild.py') ]
             if options.force:

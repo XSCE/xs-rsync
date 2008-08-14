@@ -69,5 +69,6 @@ if [ -e $UM_MOUNTPOINT/xs-xobuilds -a \
     (/usr/bin/xs-refresh-xobuilds.py 2>&1 ) | logger -p user.debug -t "xs-rsync[$$]"
     log notice "[6/$STEPS] Finished - XOs can now update.";
 
+    rm -fr "$TMPDEST" "$TMPMANIF"
 
 fi # end if we have xs-xobuilds/manifest.sha1

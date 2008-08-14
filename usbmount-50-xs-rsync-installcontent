@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 # Part of the xs-sync package
 # Author: Martin Langhoff <martin@laptop.org>
 # Copyright: One Laptop per Child
@@ -17,16 +17,16 @@ log()
 STEPS=5
 
 if [ -e $UM_MOUNTPOINT/xs-xobuilds -a \
-     -e $UM_MOUNTPOINT/xs-xobuilds/manifest.md5 ];then
+     -e $UM_MOUNTPOINT/xs-xobuilds/manifest.sha1 ];then
     log notice 'Found xobuilds to install!';
-    log notice "[1/$STEPS] Checking signature]";
+    log notice "[1/$STEPS] Checking whether it has a manifest";
 
-    xs-check-signature $UM_MOUNTPOINT/xs-xobuilds/manifest.md5
-
-    log notice "[2/$STEPS] Checking checksum on external disk";
-    pushd $UM_MOUNTPOINT/xs-xobuilds
-    md5sum -c manifest.md5
-    popd
+    if [ -e $UM_MOUNTPOINT/xs-xobuilds/manifest.sha1 ];then
+	log notice "[2/$STEPS] Seems to have a manifest";
+    else
+	log err "[2/$STEPS] Missing manifest"
+	exit 1;
+    fi
 
     ## Do we have enough space?
     # note: we could use awk {'print $4'} instead of the
@@ -44,19 +44,30 @@ if [ -e $UM_MOUNTPOINT/xs-xobuilds -a \
     ### Copy it first - as the media is bound to be slow
     # - make this atomic by cp'ing to a tmpdir, and mv'ing into place
     #   to be fail-safe
-    # - remove - manifest.md5
+    # - mv aside manifest.sha1 and its sig
     # - TODO? we could avoid cp'ing files we already have using
     #   rsync --copy-dest instead of cp
     #
     log notice "[3/$STEPS] Copying xo-builds to xobuilds-packed";
     TMPDEST=`mktemp -d -p /library/xs-rsync/tmp`
     cp $UM_MOUNTPOINT/xs-xobuilds/* $TMPDEST
-    rm $TMPDEST/manifest.md5
+
+    # In a tmpdir we own, safe from race conditions
+    # run the checksums...
+    log notice "[4/$STEPS] Checking the manifest";
+    # mv the manifest to a different dir
+    TMPMANIF=`mktemp -d -p /library/xs-rsync/tmp`
+    mv $TMPDEST/manifest.sha1 $TMPMANIF/
+    if [ -e $TMPDEST/manifest.sha1.sig ]; then
+	mv $TMPDEST/manifest.sha1.sig $TMPMANIF/
+    fi
+    xs-sum -c $TMPMANIF/manifest.sha1 -d $TMPDEST
+
     mv $TMPDEST/* /library/xs-rsync/xobuilds-packed/
 
-    log notice "[4/$STEPS] Refreshing XO builds available";
+    log notice "[5/$STEPS] Refreshing XO builds available";
     (/usr/bin/xs-refresh-xobuilds.py 2>&1 ) | logger -p user.debug -t "xs-rsync[$$]"
-    log notice "[5/$STEPS] Finished - XOs can now update.";
+    log notice "[6/$STEPS] Finished - XOs can now update.";
 
 
-fi # end if we have xs-xobuilds/manifest.md5
+fi # end if we have xs-xobuilds/manifest.sha1

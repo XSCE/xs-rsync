@@ -54,7 +54,12 @@ Publishing a new XO OS build
      from the commandline: (GUI-based instructions welcome)
 
         cd /path/to/usb/xs-xobuilds;
-        sha1sum * > manifest.sha1
+        sha1sum * > /tmp/manifest.sha1
+	mv /tmp/manifest.sha1 ./
+
+     ( Note! The instructions above create the manifest
+       in a temporary directory, to avoid trying to
+       provide a sha1 of the manifest itself. )
 
  4 - If your XS is enforcing security, you will need to sign the
      manifest with the NOC key. See the Schoolserver wiki for more

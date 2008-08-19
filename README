@@ -31,7 +31,7 @@ task.
 Publishing a new XO OS build
 ----------------------------
 
-~ With a USB stick, for a headless XO ~
+~ With a USB stick, for a headless XS ~
 
  1 - Pick a name for the build. The build file can have one
      of many names, depending on its source and build stream.
@@ -96,7 +96,7 @@ Also
    Removing (or renaming) the .name file is enough.
 
  - To force a re-unpack of the published builds run
-   `xs-refresh-xobuildlist --force` as root. This
+   `xs-refresh-xobuilds --force` as root. This
    will rebuild the fakeroot state files, which can
    get out of sync if the underlying inodes change -
    for example, if /library is moved to a different
@@ -105,7 +105,7 @@ Also
 XO build - scripts involved
 ---------------------------
 
- - xs-refresh-xobuildlist the published builds with
+ - xs-refresh-xobuilds the published builds with
    /library/xs-rsync/xobuilds-packed/ - including updating
    /etc/xs-rsyncd.gen.conf
 

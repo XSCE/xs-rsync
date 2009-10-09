@@ -71,11 +71,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %files
 %{_bindir}/xs-publish-xobuild.py
-%{_bindir}/xs-publish-xobuild.pyo
-%{_bindir}/xs-publish-xobuild.pyc
 %{_bindir}/xs-refresh-xobuilds.py
-%{_bindir}/xs-refresh-xobuilds.pyo
-%{_bindir}/xs-refresh-xobuilds.pyc
 %{_bindir}/xs-unpack-xobuild.sh
 %doc README COPYING
 %config(noreplace) %{_sysconfdir}/xs-rsyncd.conf.in

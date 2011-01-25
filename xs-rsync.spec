@@ -51,9 +51,6 @@ service xinetd condrestart
 
 %postun
 service xinetd condrestart
-if [ -e /etc/xs-rsyncd.conf ]; then 
-   rm /etc/xs-rsyncd.conf
-fi
 
 %prep
 

@@ -87,7 +87,7 @@ def main():
             or not os.path.exists(bpath)
             or not os.path.exists(os.path.join(bpath,'contents'))):
             installcmd = [ 'sudo', '-u', 'xs-rsync',
-                           os.path.join(os.path.dirname(sys.argv[0]), 'xs-publish-xobuild.py') ]
+                           os.path.join(os.path.dirname(sys.argv[0]), 'xs-publish-xobuild') ]
             if options.force:
                 installcmd.append('-f')
             installcmd.append(ppath)
@@ -100,7 +100,7 @@ def main():
     # the state file -
     if buildremoved and not buildadded:
         installcmd = [ 'sudo', '-u', 'xs-rsync',
-                       os.path.join(os.path.dirname(sys.argv[0]), 'xs-publish-xobuild.py'),
+                       os.path.join(os.path.dirname(sys.argv[0]), 'xs-publish-xobuild'),
                        '--onlyfakerootstate']
         check_call(installcmd)
 

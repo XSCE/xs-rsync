@@ -1,13 +1,13 @@
-Name:           @PKGNAME@
-Version:        @VERSION@
-Release:        @RELEASE@%{?dist}
+Name:           xs-rsync
+Version:        xx
+Release:        1%{?dist}
 
 Summary:        OLPC XS Rsync publishing
 Group:          Applications/Archiving
 License:        GPLv2
 Packager:       Martin Langhoff <martin@laptop.org>
 URL:            http://wiki.laptop.org/go/XS-rsync
-Source0:        http://dev.laptop.org/~martin/SOURCES/%{name}-%{version}.tar.bz2
+Source0:        %{name}-%{version}.tar.bz2
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch

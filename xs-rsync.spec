@@ -22,6 +22,7 @@ Requires:       bash
 Requires:       vixie-cron
 Requires:       usbmount
 Requires:       xs-tools
+Requires:       lzma
 
 %description
 XS rsync provides support for publishing resources on the XS via rsync.

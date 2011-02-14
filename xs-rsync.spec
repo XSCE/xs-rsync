@@ -1,5 +1,5 @@
 Name:           xs-rsync
-Version:        xx
+Version:        0.5.3.g38d3aea
 Release:        1%{?dist}
 
 Summary:        OLPC XS Rsync publishing
@@ -22,6 +22,7 @@ Requires:       bash
 Requires:       vixie-cron
 Requires:       usbmount
 Requires:       xs-tools
+Requires:       lzma
 
 %description
 XS rsync provides support for publishing resources on the XS via rsync.
@@ -51,9 +52,6 @@ service xinetd condrestart
 
 %postun
 service xinetd condrestart
-if [ -e /etc/xs-rsyncd.conf ]; then 
-   rm /etc/xs-rsyncd.conf
-fi
 
 %prep
 
@@ -70,13 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
 %files
-%{_bindir}/xs-publish-xobuild.py
-%{_bindir}/xs-publish-xobuild.pyo
-%{_bindir}/xs-publish-xobuild.pyc
-%{_bindir}/xs-refresh-xobuilds.py
-%{_bindir}/xs-refresh-xobuilds.pyo
-%{_bindir}/xs-refresh-xobuilds.pyc
-%{_bindir}/xs-unpack-xobuild.sh
+%{_bindir}/xs-publish-xobuild
+%{_bindir}/xs-refresh-xobuilds
+%{_bindir}/xs-unpack-xobuild
 %doc README COPYING
 %config(noreplace) %{_sysconfdir}/xs-rsyncd.conf.in
 %config(noreplace) %{_sysconfdir}/xinetd.d/xs-rsyncd

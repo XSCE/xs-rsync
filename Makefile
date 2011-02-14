@@ -8,9 +8,9 @@ $(DESTDIR):
 
 install:
 	install -D -d $(DESTDIR)/usr/bin
-	install -D xs-refresh-xobuilds.py $(DESTDIR)/usr/bin
-	install -D xs-publish-xobuild.py $(DESTDIR)/usr/bin
-	install -D xs-unpack-xobuild.sh $(DESTDIR)/usr/bin
+	install -D xs-refresh-xobuilds $(DESTDIR)/usr/bin
+	install -D xs-publish-xobuild $(DESTDIR)/usr/bin
+	install -D xs-unpack-xobuild $(DESTDIR)/usr/bin
 
 	install -D -m 644 rsyncd.conf.in     $(DESTDIR)/etc/xs-rsyncd.conf.in
 	install -D -m 644 xinetd-xs-rsyncd.conf $(DESTDIR)/etc/xinetd.d/xs-rsyncd

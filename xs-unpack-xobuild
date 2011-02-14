@@ -11,7 +11,7 @@ set -e
 
 # Parameters
 DESTDIR=$1      # complete dest dir path
-BUILDFILE=$2    # tree bz2 file
+BUILDFILE=$2    # tree file
 
 # Very recommended: Set TMPDIR to a tempdir
 # on the same partition as DESTDIR
@@ -31,7 +31,14 @@ if [ -z "$DESTDIR" -o -z "$BUILDFILE" ]; then
 fi
 
 # Stop complaining and do the job
-tar -C "$TEMPDIR" --numeric-owner -xpjf "$BUILDFILE"
+if [ ${BUILDFILE:(-8)} = ".tar.bz2" ]; then
+    tar -C "$TEMPDIR" --numeric-owner -xpjf "$BUILDFILE"
+elif [ ${BUILDFILE:(-9)} = ".tar.lzma" ]; then 
+    lzma -cd "$BUILDFILE" | tar -C "$TEMPDIR" --numeric-owner -xp
+else
+    echo Unknown file format!
+    exit 1
+fi
 
 #
 # Some of the images have odd leftovers around

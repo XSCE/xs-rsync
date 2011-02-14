@@ -51,7 +51,7 @@ def main():
 
     # the contents file is a bit more involved
     contentsfile = buildfile
-    m = re.match('(.*)-tree.tar.bz2', contentsfile)
+    m = re.match('(.*)-tree\.(tar\.bz2|tar\.lzma)', contentsfile)
     if not m:
         raise RuntimeError('Cannot understand your buildfile name')
     contentsfile = m.group(1) + '.contents'
@@ -89,7 +89,7 @@ def main():
     check_call(['flock', tmpstatefile,
                 'fakeroot', '-i', tmpstatefile,
                 '-s', tmpstatefile, '--',
-                os.path.join(basepath, 'xs-unpack-xobuild.sh'),
+                os.path.join(basepath, 'xs-unpack-xobuild'),
                 destdir, buildfile])
     os.chmod(tmpstatefile, stat.S_IRGRP | stat.S_IROTH| stat.S_IRUSR | stat.S_IWUSR)
     os.rename(tmpstatefile, os.path.join(options.statedir, buildname+'.state'))

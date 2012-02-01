@@ -13,10 +13,11 @@ install:
 	install -D xs-unpack-xobuild $(DESTDIR)/usr/bin
 
 	install -D -m 644 rsyncd.conf.in     $(DESTDIR)/etc/xs-rsyncd.conf.in
-	install -D -m 644 xinetd-xs-rsyncd.conf $(DESTDIR)/etc/xinetd.d/xs-rsyncd
-	install -D -m 644 crond-xs-rsync.conf   $(DESTDIR)/etc/cron.d/xs-rsync
 
-	install -D -m 755 usbmount-50-xs-rsync-installcontent $(DESTDIR)/etc/usbmount/mount.d/50-xs-rsync-installcontent
+	install -D -d $(DESTDIR)/usr/share/xs-rsync
+	install -m 755 usbmount-50-xs-rsync-installcontent $(DESTDIR)/usr/share/xs-rsync
+	install -m 644 crond-xs-rsync.conf $(DESTDIR)/usr/share/xs-rsync
+	install -m 644 xinetd-xs-rsyncd.conf $(DESTDIR)/usr/share/xs-rsync
 
 	# root owned
 	install -D -d $(DESTDIR)/library/xs-rsync
@@ -28,8 +29,4 @@ install:
 	install -D -d $(DESTDIR)/library/xs-rsync/tmp
 	install -D -d $(DESTDIR)/var/run/xs-rsync
 
-
-
-
-
-
+	install -D -m 755 xs-rsync.setup.sh $(DESTDIR)/etc/sysconfig/olpc-scripts/setup.d/xs-rsync

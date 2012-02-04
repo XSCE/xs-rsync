@@ -41,7 +41,7 @@ def main():
             namefile.close()
             name=name.rstrip()
             buildfn = m.group(1) + '-tree'
-            for ext in ('.tar.bz2', '.tar.lzma'):
+            for ext in ('.tar.bz2', '.tar.lzma', '.tar.xz'):
                 if os.path.isfile(os.path.join(PACKEDDIR,buildfn + ext)):
                     buildfn = buildfn + ext
                     break

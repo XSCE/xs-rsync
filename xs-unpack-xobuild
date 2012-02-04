@@ -35,6 +35,8 @@ if [ ${BUILDFILE:(-8)} = ".tar.bz2" ]; then
     tar -C "$TEMPDIR" --numeric-owner -xpjf "$BUILDFILE"
 elif [ ${BUILDFILE:(-9)} = ".tar.lzma" ]; then 
     lzma -cd "$BUILDFILE" | tar -C "$TEMPDIR" --numeric-owner -xp
+elif [ ${BUILDFILE:(-7)} = ".tar.xz" ]; then
+    xz -cd "$BUILDFILE" | tar -C "$TEMPDIR" --numeric-owner -xp
 else
     echo Unknown file format!
     exit 1
